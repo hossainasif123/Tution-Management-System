@@ -1,0 +1,19 @@
+<p class="card-text small">
+  <span class="text-muted">{{ whos_feedback }} Feedback:</span><br>
+  {# Print filled stars #}
+  {% with ''|center:feedback.rating as range %}
+  {% for _ in range %}
+    <i class="fas fa-star"></i>
+  {% endfor %}
+  {% endwith %}
+  {# Print empty stars #}
+  {% with inv_rating=-5|add:feedback.rating %}
+  {% widthratio inv_rating 1 -1 as inv_rating_p %}
+  {% with ''|center:inv_rating_p as range %}
+  {% for _ in range %}
+    <i class="far fa-star"></i>
+  {% endfor %}
+  {% endwith %}
+  {% endwith %}
+  {{ feedback.rating }} star<br>
+  {{ feedback.feedback }}</p>

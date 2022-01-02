@@ -1,0 +1,8 @@
+{% extends 'client/base_client.html' %}
+
+{% block content %}
+    <h3 style="margin: 10px 0;">Your Ads</h3>
+    {% for feed in feed_list %}
+        {% include 'client/single_ad.inc.html' %}
+    {% endfor %}
+{% endblock content %}

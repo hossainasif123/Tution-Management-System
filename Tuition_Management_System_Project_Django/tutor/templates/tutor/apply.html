@@ -1,0 +1,37 @@
+{% extends 'tutor/base_tutor.html' %}
+
+{% block content %}
+    <style>
+    div.apply-form form {
+        margin-top: 1rem;
+        margin-bottom: 10px;
+    }
+    </style>
+    <div class="apply-form">
+      {% include 'tutor/single_ad.inc.html' %}
+    {% if feed.already_applied %}
+      <h5 class="font-weight-bold">Proposal</h5>
+      <p>{{ feed.proposal }}</p>
+      {% if feed.answers.count %}
+        <h5 class="font-weight-bold">Questions asked by the client:</h5>
+        <ol>
+        {% for val in feed.answers.all %}
+          <li><span class="font-weight-bold">{{ val.question }}</span><br>{{ val.answer }}</li>
+        {% endfor %}
+        </ol>
+      {% endif %} {# end qa #}
+    {% else %}
+      <form method="post">
+        {% csrf_token %}
+        <textarea class="form-control" name="proposal" placeholder="Write a proposal (optional)"></textarea>
+        {% if feed.questions.count %}
+          <p>Questions asked by the client:</p>
+          {% for val in feed.questions.all %}
+            <textarea class="form-control" name="q_{{ val.pk }}" placeholder="{{ val }}" required></textarea>
+          {% endfor %}
+        {% endif %}
+        <button type="submit" class="btn btn-dark">Apply</button>
+      </form>
+    {% endif %} {# end is_applied #}
+    </div>
+{% endblock content %}

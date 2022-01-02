@@ -1,0 +1,33 @@
+{% extends 'tutor/base_tutor.html' %}
+
+{% block content %}
+    <div class="history">
+        <h3>History</h3>
+        <div class="history-active" style="margin-bottom: 10px">
+            <a class="btn btn-light d-block text-left" data-toggle="collapse" href="#history_active" role="button" aria-expanded="false" aria-controls="history_active">
+                Active <span class="badge badge-dark badge-pill" style="padding-top: 3px">{{ feed_active.count }}</span>
+            </a>
+            <div class="collapse" id="history_active">
+                <div class="container">
+                    {% for feed in feed_active.list %}
+                        {% include 'tutor/single_ad.inc.html' %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+      {% with show_feedback=True %}
+        <div class="history-archive">
+            <a class="btn btn-light d-block text-left" data-toggle="collapse" href="#history_archive" role="button" aria-expanded="false" aria-controls="history_archive">
+                Archive <span class="badge badge-dark badge-pill" style="padding-top: 3px">{{ feed_archive.count }}</span>
+            </a>
+            <div class="collapse" id="history_archive">
+                <div class="container">
+                    {% for feed in feed_archive.list %}
+                        {% include 'tutor/single_ad.inc.html' %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+      {% endwith %}
+    </div>
+{% endblock %}

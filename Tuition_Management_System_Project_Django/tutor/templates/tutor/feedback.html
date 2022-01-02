@@ -1,0 +1,28 @@
+{% extends 'tutor/base_tutor.html' %}
+
+{% block content %}
+    <style>
+    div.view-ad {
+        margin-top: 1rem;
+        margin-bottom: 10px;
+    }
+    </style>
+    <div class="view-ad">
+      {% include 'tutor/single_ad.inc.html' %}
+    </div>
+    <form method="post">
+      {% csrf_token %}
+      <label for="rating">Rating</label>
+      <select class="form-control" name="rating" id="rating" required>
+          <option value="" disabled selected>Choose</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+      </select><br>
+      <label for="feedback">Feedback</label>
+      <textarea class="form-control" name="feedback" id="feedback" placeholder="Enter a short feedback" rows="4">{{ feedback }}</textarea>
+      <button type="submit" class="btn btn-dark">Submit</button>
+    </form>
+{% endblock content %}

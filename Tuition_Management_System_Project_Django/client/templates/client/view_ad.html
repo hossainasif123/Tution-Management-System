@@ -1,0 +1,61 @@
+{% extends 'client/base_client.html' %}
+
+{% block content %}
+    <style>
+    div.view-ad {
+        margin-top: 1rem;
+        margin-bottom: 10px;
+    }
+    </style>
+    <div class="view-ad">
+      {% include 'client/single_ad.inc.html' %}
+    </div>
+    {% if proposals %}
+    <div class="prop_parent">
+      <div class="h5">{{ proposals.count }} proposal(s) received.</div>
+      {% for proposal in proposals %}
+      <a class="btn btn-light d-block text-left" data-toggle="collapse" href="#history_active" role="button"
+         aria-expanded="false" aria-controls="history_active">{{ proposal.tutor.name }}</a>
+      <div class="collapse" id="history_active">
+        <div class="container">
+          <p>{{ proposal.proposal }}</p>
+          {% with answers=proposal.answer_set %}
+          {% if answers %}
+          <ol>
+            {% for answer in answers.all %}
+            <li><span class="font-weight-bold">{{ answer.question.question }}</span><br>{{ answer.answer }}</li>
+            {% endfor %}
+          </ol>
+          {% endif %}
+          {% endwith %}
+          <a href="{% url 'client-profile' proposal.tutor.pk %}" class="btn btn-small btn-light">View profile</a>
+          <a href="{% url 'client-accept' feed.pk proposal.tutor.pk %}" class="btn btn-small btn-dark">Accept</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% if assignee %}
+        <p>Assigned to <a href="{% url 'client-profile' assignee.tutor.pk %}">{{ assignee.tutor.name }}</a></p>
+    {% endif %}
+    {% if running %}
+        <a href="{% url 'client-terminate' feed.pk %}" class="btn btn-dark btn-small m-1">End tuition</a>
+    {% endif %}
+
+    {% if c_feedback %}
+    {% with feedback=c_feedback %}
+    {% with whos_feedback='Your' %}
+        {% include 'tutor/feedback.inc.html' %}
+    {% endwith %}
+    {% endwith %}
+    {% elif assignee and not running %}
+        <a href="{% url 'client-feedback' feed.pk %}" class="btn btn-dark btn-small m-1">Provide feedback</a>
+    {% endif %}
+    {% if t_feedback %}
+    {% with feedback=t_feedback %}
+    {% with whos_feedback="Tutor's" %}
+        {% include 'tutor/feedback.inc.html' %}
+    {% endwith %}
+    {% endwith %}
+    {% endif %}
+{% endblock content %}

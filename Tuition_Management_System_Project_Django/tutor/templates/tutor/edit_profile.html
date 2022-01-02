@@ -1,0 +1,176 @@
+{% extends 'tutor/base_tutor.html' %}
+
+{% block content %}
+    <style>
+    .btn-transparent {
+        background: transparent;
+        border: none;
+    }
+    </style>
+    <div class="modal fade" id="education_modal" tabindex="-1" role="dialog" aria-labelledby="education_modal_label" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="education_modal_label">Add Education</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <label class="sr-only" for="institute">Institute</label>
+              <input type="text" class="form-control btn-small" name="institute" id="institute" placeholder="Institute Name">
+              <label class="sr-only" for="degree">Degree</label>
+              <input type="text" class="form-control btn-small" name="degree" id="degree" placeholder="Degree (eg. BSc)">
+              <label class="sr-only" for="dept">Department</label>
+              <input type="text" class="form-control btn-small" name="dept" id="dept" placeholder="Department (eg. Finance)">
+              <div class="row">
+                  <div class="col-md-6">
+                      <label class="sr-only" for="from_year">From year</label>
+                      <input type="date" class="form-control btn-small" name="from_year" id="from_year" placeholder="From date (yyyy-mm-dd)">
+                  </div>
+                  <div class="col-md-6">
+                      <label class="sr-only" for="to_year">To year</label>
+                      <input type="date" class="form-control btn-small float-right" name="to_year" id="to_year" placeholder="To date (yyyy-mm-dd)">
+                  </div>
+              </div>
+              <label class="sr-only" for="result">Result</label>
+              <input type="text" class="form-control btn-small" name="result" id="result" placeholder="(Current) Result (eg. 5.00 out of 5.00)">
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary btn-small" data-dismiss="modal">Cancel</button>
+              <button type="button" id="add_btn" class="btn btn-primary btn-small" data-dismiss="modal" onclick="add_edu()">Add</button>
+              <button type="button" id="save_btn" class="btn btn-primary btn-small hide" data-dismiss="modal">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="settings" style="margin: 10px 0;">
+      <h3>Edit Profile</h3>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset class="form-group">
+          <label for="profile_img">Upload a profile picture: </label>
+          <input type="file" name="profile_img" class="form-control" id="profile_img" />
+          <label for="full_name">Full Name</label>
+          <input type="text" name="full_name" id="full_name" class="form-control" value="{{ profile.name }}"
+                 placeholder="Enter your full name">
+          <label for="bio">Bio</label>
+          <input type="text" name="bio" id="bio" class="form-control" value="{{ profile.bio }}"
+                 placeholder="Describe your expertise in no more than 50 words">
+          <label for="location">Location</label>
+          <input type="text" name="location" id="location" class="form-control" value="{{ profile.location }}"
+                 placeholder="Enter your location (ie. Brgy.Enlcaro,Binalbagan)">
+          <label>Gender: </label>
+          <input type="radio" name="gender" id="gen_male" value="male"> <label for="gen_male">Male</label>
+          <input type="radio" name="gender" id="gen_female" value="female"> <label for="gen_female">Female</label><br>
+          <label for="title">Overview Title</label>
+          <input type="text" name="title" id="title" class="form-control" value="{{ profile.title }}"
+                 placeholder="Enter a professional overview title">
+          <label for="overview">Overview</label>
+          <textarea name="overview" id="overview" class="form-control" rows="10" placeholder="Describe the title">
+              {{ profile.overview }}</textarea>
+          <label for="expertise">Areas of Expertise</label>
+          <input type="text" name="expertise" id="expertise" class="form-control" value="{{ profile.expertise }}"
+                 placeholder="Enter a comma separated list of expertise">
+        </fieldset>
+        <fieldset class="form-group" id="education">
+          <legend>
+              Education
+              <button type="button" data-toggle="modal" data-target="#education_modal" class="far fa-plus-square"
+                      style="background: transparent;border: none;font-size: 1rem;" onclick="clean_modal()"></button>
+          </legend>
+          <input type="hidden" name="upper_bound" id="upper_bound" value="{{ education|length }}"> {# lower bound is 0 #}
+          {% for edu in education %} {# Value starts from zero upto $('#total_edu').val()-1 #}
+            <div class="card-text" style="margin-bottom: 10px" id="edu_{{ forloop.counter0 }}">
+              <div>
+                  <button type="button" class="fa fa-times text-danger btn-transparent" onclick="delete_edu({{ forloop.counter0 }})" title="Delete"></button>
+                  <button type="button" class="fa fa-pen text-info btn-transparent" onclick="edit_edu({{ forloop.counter0 }})" title="Edit"></button>
+              </div>
+              <input type="hidden" name="edu_ins_{{ forloop.counter0 }}" value="{{ edu.institute }}">
+              <input type="hidden" name="edu_deg_{{ forloop.counter0 }}" value="{{ edu.degree }}">
+              <input type="hidden" name="edu_dep_{{ forloop.counter0 }}" value="{{ edu.department }}">
+              <input type="hidden" name="edu_fy_{{ forloop.counter0 }}" value="{{ edu.from_year|date:"Y-m-d" }}">
+              <input type="hidden" name="edu_ty_{{ forloop.counter0 }}" value="{{ edu.to_year|date:"Y-m-d" }}">
+              <input type="hidden" name="edu_res_{{ forloop.counter0 }}" value="{{ edu.result }}">
+              <h5 class="card-text">{{ edu.institute }}</h5>
+              <h6 class="card-text small text-muted">{{ edu.degree }}, {{ edu.department }}</h6>
+              <h6 class="card-text small text-muted">{{ edu.from_year|date:"Y" }} - {{ edu.to_year|date:"Y" }}, {{ edu.result }}</h6>
+            </div>
+          {% endfor %}
+        </fieldset>
+        <input type="submit" value="Save changes" class="btn btn-success" />
+      </form>
+    </div>
+    <script>
+        function clean_modal() {
+            $('#institute').val('');
+            $('#degree').val('');
+            $('#dept').val('');
+            $('#from_year').val('');
+            $('#to_year').val('');
+            $('#result').val('');
+            $('#add_btn').show();
+            $('#save_btn').hide();
+        }
+
+        function add_edu(r_index) {
+            let index;
+            let te;
+            if(r_index === undefined) {
+                te = $('#upper_bound');
+                index = te.val() | 0;
+            } else {
+                index = r_index;
+            }
+            const ins = $('#institute');
+            const deg = $('#degree');
+            const dep = $('#dept');
+            const fy  = $('#from_year');
+            const ty  = $('#to_year');
+            const res = $('#result');
+            $('#education').append('<div class="card-text" style="margin-bottom: 10px" id="edu_'+ index +'">\
+              <div>\
+                  <button type="button" class="fa fa-times text-danger btn-transparent" onclick="delete_edu('+ index +')" title="Delete"></button>\
+                  <button type="button" class="fa fa-pen text-info btn-transparent" onclick="edit_edu('+ index +')" title="Edit"></button>\
+              </div>\
+              <input type="hidden" name="edu_ins_'+ index +'" value="'+ ins.val() +'">\
+              <input type="hidden" name="edu_deg_'+ index +'" value="'+ deg.val() +'">\
+              <input type="hidden" name="edu_dep_'+ index +'" value="'+ dep.val() +'">\
+              <input type="hidden" name="edu_fy_'+ index +'" value="'+ fy.val() +'">\
+              <input type="hidden" name="edu_ty_'+ index +'" value="'+ ty.val() +'">\
+              <input type="hidden" name="edu_res_'+ index +'" value="'+ res.val() +'">\
+              <h5 class="card-text">'+ ins.val() +'</h5>\
+              <h6 class="card-text small text-muted">'+ deg.val() +', '+ dep.val() +'</h6>\
+              <h6 class="card-text small text-muted">'+ (new Date(fy.val())).getFullYear() +' - '+ (new Date(ty.val())).getFullYear() +', '+ res.val() +'</h6>\
+            </div>');
+            if(r_index === undefined) te.val(index+1);
+            ins.val(''); deg.val(''); dep.val(''); fy.val(''); ty.val(''); res.val('');
+        }
+
+        function edit_edu(index) {
+            $('#institute').val($('input[name=edu_ins_'+index+']').val());
+            $('#degree').val($('input[name=edu_deg_'+index+']').val());
+            $('#dept').val($('input[name=edu_dep_'+index+']').val());
+            $('#from_year').val($('input[name=edu_fy_'+index+']').val());
+            $('#to_year').val($('input[name=edu_ty_'+index+']').val());
+            $('#result').val($('input[name=edu_res_'+index+']').val());
+            $('#save_btn').show().attr('onclick', 'edit_edu_action('+index+')');
+            $('#add_btn').hide();
+            $('#education_modal').modal('show');
+        }
+
+        function edit_edu_action(index) {
+            delete_edu(index, true);
+            add_edu(index);
+        }
+
+        function delete_edu(index, preserve_index) {
+            const te = $('#upper_bound');
+            const r_index = te.val()|0;
+            $('#edu_'+index).remove();
+            if (preserve_index !== true && r_index - 1 === index){  // Prevent cumulative increase of index
+                te.val(index)
+            }
+        }
+    </script>
+{% endblock content %}

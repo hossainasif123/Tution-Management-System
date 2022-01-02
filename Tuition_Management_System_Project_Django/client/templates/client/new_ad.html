@@ -1,0 +1,43 @@
+{% extends 'client/base_client.html' %}
+
+{% block content %}
+    <h1>Post a New Tution</h1>
+    <form method="POST">
+      <fieldset class="form-group">
+        {% csrf_token %}
+        <label for="title" class="sr-only">Ad title</label>
+        <input type="text" class="form-control" id="title" name="title" placeholder="Enter a title" value="{{ title }}" required>
+        <label for="description" class="sr-only">Ad description</label>
+        <textarea class="form-control" rows="5" id="description" name="description" placeholder="Enter a short description" required>{{ description }}</textarea>
+        <label for="questions" class="sr-only">Enter optional question</label>
+        <textarea class="form-control" rows="3" id="questions" name="questions" placeholder="Enter optional questions separated by new lines (ie. enter)" required>{{ questions }}</textarea>
+        <label for="subjects" class="sr-only">Subjects to be taught</label>
+        <input type="text" class="form-control" id="subjects" name="subjects" placeholder="Enter subjects to be taught" value="{{ subjects }}" required>
+        <label for="type" class="sr-only">Version/Medium</label>
+        <input type="text" class="form-control" id="type" name="type" placeholder="Enter version/medium (eg. Pilipino Medium, English Medium)" value="{{ type }}" required>
+        <label for="grade" class="sr-only">Class</label>
+        <input type="text" class="form-control" id="grade" name="grade" placeholder="Enter class (eg. Class 10, HSC prep, etc.)" value="{{ grade }}" required>
+        Gender:
+        <label><input type="radio" id="gender" name="gender" value="male" required> Male</label>
+        <label><input type="radio" id="gender" name="gender" value="female" required> Female</label>
+        <label><input type="radio" id="gender" name="gender" value="mixed" required> Mixed</label><br>
+        <label for="std_count" class="sr-only">Student count</label>
+        <input type="number" class="form-control" id="std_count" name="std_count" placeholder="Number of students" value="{{ std_count }}" required>
+        Preferred gender for tutor:
+        <label><input type="radio" id="pref_gender" name="pref_gender" value="male" required> Male</label>
+        <label><input type="radio" id="pref_gender" name="pref_gender" value="female" required> Female</label>
+        <label><input type="radio" id="pref_gender" name="pref_gender" value="any" required> Any</label><br>
+        <label for="time" class="sr-only">Teaching time</label>
+        <input type="text" class="form-control" id="time" name="time" placeholder="Teaching time (eg. 5.00 PM - 7:00 PM, Evening, etc)" value="{{ time }}" required>
+        <label for="days" class="sr-only">How many days a week?</label>
+        <input type="text" class="form-control" id="days" name="days" placeholder="How many days a week?" value="{{ days }}" required>
+        <label for="location" class="sr-only">Tuition location</label>
+        <input type="text" class="form-control" id="location" name="location" placeholder="Enter tuition location" value="{{ location }}" required>
+        <label for="salary" class="sr-only">Salary per month</label>
+        <input type="number" class="form-control" id="salary" name="salary" placeholder="Enter salary per month" value="{{ salary }}" required>
+        <label for="timeout" class="sr-only">Run this until</label>
+        <input type="date" class="form-control" id="timeout" name="timeout" placeholder="Enter a date until which the ad will run (dd/mm/yyyy)" value="{{ timout }}" required>
+        <button type="submit" class="btn btn-dark">Submit</button>
+      </fieldset>
+    </form>
+{% endblock content %}

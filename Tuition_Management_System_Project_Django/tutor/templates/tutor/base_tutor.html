@@ -1,0 +1,96 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css" integrity="sha256-UzFD2WYH2U1dQpKDjjZK72VtPeWP50NoJjd26rnAdUI=" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <title>MASTER JI</title>
+
+    <link href="{% static 'css/grayscale.min.css' %}" rel="stylesheet">
+  </head>
+  <body style="background-color: cornsilk;">
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-success">
+    <div class="container">
+      <a class="navbar-brand js-scroll-trigger" href="{% url 'tutor-feed' %}">MASTER JI</a>
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'tutor-logout' %}">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <header style="padding-top: 56px">
+    <div class="container">
+      <div class="row">
+        <nav class="col-md-3 col-lg-2 sidebar">
+          <div class="position-fixed"> <!-- fix for xs devices -->
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a class="nav-link {{ tutor_feed }}" href="{% url 'tutor-feed' %}">
+                  <i class="fa fa-home"></i>
+                  Feed
+                  {% if tutor_feed %}
+                  <span class="sr-only">(current)</span>
+                  {% endif %}
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {{ tutor_profile }}" href="{% url 'tutor-profile' user.pk %}">
+                  <i class="fa fa-user"></i>
+                  Profile
+                  {% if tutor_profile %}
+                  <span class="sr-only">(current)</span>
+                  {% endif %}
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {{ tutor_history }}" href="{% url 'tutor-history' %}">
+                  <i class="fa fa-history"></i>
+                  History
+                  {% if tutor_history %}
+                  <span class="sr-only">(current)</span>
+                  {% endif %}
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {{ tutor_settings }}" href="{% url 'tutor-settings' %}">
+                  <i class="fa fa-cog"></i>
+                  Settings
+                  {% if tutor_settings %}
+                  <span class="sr-only">(current)</span>
+                  {% endif %}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <div class="col-md-9 main-section">
+          {% if messages %}
+            {% for message in messages %}
+              {% if message.tags == 'error' %}
+                <div class="alert alert-danger">{{ message }}</div>
+              {% else %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% block content %}{% endblock %}
+        </div>
+      </div>
+    </div>
+  </header>
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  </body>
+</html>

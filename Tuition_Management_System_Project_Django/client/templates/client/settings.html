@@ -1,0 +1,74 @@
+{% extends 'client/base_client.html' %}
+
+{% block content %}
+    <div class="settings" style="margin: 10px 0;">
+      <h3>Settings</h3>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset class="form-group">
+          <legend>Change Personal Info</legend>
+          <label for="profile_img">Upload a profile picture: </label>
+          <input type="file" name="profile_img" class="form-control" id="profile_img" />
+          <label for="full_name">Full Name</label>
+          <input type="text" name="full_name" id="full_name" class="form-control" value="{{ user.name }}"
+                 placeholder="Enter your full name">
+          <label for="bio">Bio</label>
+          <input type="text" name="bio" id="bio" class="form-control" value="{{ user.bio }}"
+                 placeholder="Describe your expertise in no more than 50 words">
+          <label for="location">Location</label>
+          <input type="text" name="location" id="location" class="form-control" value="{{ user.location }}"
+                 placeholder="Enter your location (ie. Uttara, Dhaka)">
+          <label>Gender: </label>
+          <input type="radio" name="gender" id="gen_male" value="male"> <label for="gen_male">Male</label>
+          <input type="radio" name="gender" id="gen_female" value="female"> <label for="gen_female">Female</label><br>
+        </fieldset>
+        <fieldset class="form-group">
+          <legend>Change Email/Phone</legend>
+          <label for="old_email" class="sr-only">Old email</label>
+          <input type="email" name="old_email" id="old_email" class="form-control" value="{{ user.email }}" disabled />
+          <label for="email1" class="sr-only">New email</label>
+          <input type="email" name="email1" id="email1" class="form-control" placeholder="New email address" />
+          <label for="email2" class="sr-only">Confirm new email</label>
+          <input type="email" name="email2" id="email2" class="form-control" placeholder="Confirm new email address" />
+        {% if phone %}
+          <label for="old_phone" class="sr-only">Old phone number</label>
+          <input type="text" name="old_phone" id="old_phone" class="form-control" value="{{ phone }}" disabled />
+        {% endif %}
+          <label for="phone" class="sr-only">New phone number</label>
+          <input type="text" name="phone" id="phone" class="form-control" placeholder="New phone number" />
+        </fieldset>
+        <fieldset class="form-group">
+          <legend>Change Password</legend>
+          <label for="old_password" class="sr-only">Old password</label>
+          <input type="password" name="old_password" id="old_password" class="form-control" placeholder="Old password">
+          <label for="password1" class="sr-only">New password</label>
+          <input type="password" name="password1" id="password1" class="form-control" placeholder="New password" />
+          <label for="password2" class="sr-only">Confirm new password</label>
+          <input type="password" name="password2" id="password2" class="form-control" placeholder="Confirm new password" />
+        </fieldset>
+        <fieldset class="form-group">
+          <legend>Identity Verification</legend>
+          {% if not verification %}
+          <label for="verification_document">Upload a document for identity verification: </label>
+          <input type="file" name="verification_document" class="form-control" id="verification_document" />
+          <label for="document_type">What type of document are you uploading?</label>
+          <select name="document_type" id="document_type" class="form-control input">
+            <option disabled selected>Choose One</option>
+            <option value="student_id">Student ID Card</option>
+            <option value="nid">National ID Card</option>
+            <option value="birth_cert">Birth Certificate</option>
+            <option value="passport">Passport</option>
+            <option value="driving_license">Driving License</option>
+          </select>
+          {% else %}
+            {% if verification.verified %}
+              <p class="text-success"><i class="fa fa-check"></i> Identity is verified using your {{ verification.type }}</p>
+            {% else %}
+              <p>Verification pending. It may take upto 5 business days to verify your identity.</p>
+            {% endif %}
+          {% endif %}
+        </fieldset>
+        <input type="submit" value="Save changes" class="btn btn-success" />
+      </form>
+    </div>
+{% endblock content %}

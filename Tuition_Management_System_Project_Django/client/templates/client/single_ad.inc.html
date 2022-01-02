@@ -1,0 +1,56 @@
+{% if feed.proposals and show_applicant_number %}
+<div class="ad border-info card" style="border-top-width: thick;">
+  <div class="bg-info card-text text-light" style="padding: 0 10px;">
+    {{ feed.proposals }} applicant(s)
+  </div>
+{% else %}
+<div class="ad card">
+{% endif %}
+  <div class="card-body">
+    <h4 class="card-title">
+    {% if display_url %}
+        <a class="card-link" href="{% url 'client-applicants' feed.pk %}">{{ feed.title }}</a>
+    {% else %}
+        {{ feed.title }}
+    {% endif %}
+    </h4>
+    <p class="card-text">{{ feed.description }}</p>
+    <div class="row">
+      <div class="col-md-6" title="Class and medium"><i class="fa fa-graduation-cap"></i> {{ feed.grade }} ({{ feed.type }})</div>
+      <div class="col-md-6" title="Subjects"><i class="fa fa-book"></i> {{ feed.subjects }}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-6" title="Monthly salary"><i class="fa">৳</i> {{ feed.salary }}</div>
+      <div class="col-md-6" title="Student gender and count"><i class="fa fa-user"></i> {{ feed.gender }} ({{ feed.std_count }} student(s))</div>
+    </div>
+    <div class="row">
+      <div class="col-md-6" title="Date and time">
+        <i class="fa fa-calendar-alt"></i>
+        {{ feed.days }} days a week
+        {% if feed.time %}
+            ({{ feed.time }})
+        {% endif %}
+      </div>
+      <div class="col-md-6" title="Location"><i class="fa fa-map-marked"></i> {{ feed.location }}</div>
+    </div>
+    {% with taken=feed.ad.taken %}
+    {% if taken and show_assignee %}
+      {% with assignee=feed.ad.assignee_set.first.tutor %}
+        <div class="card-text">Assigned to <a href="{% url 'client-profile' assignee.pk %}" >{{ assignee.name }}</a></div>
+      {% endwith %}
+    {% endif %}
+    {% if taken and show_end_job %}
+        <a href="{% url 'client-terminate' feed.pk %}" class="btn btn-dark btn-small m-1">End tuition</a>
+    {% endif %}
+    {% if taken and show_feedback %}
+      {% if not feed.feedback %}
+        <a href="{% url 'client-feedback' feed.pk %}" class="btn btn-dark btn-small m-1">Provide feedback</a>
+      {% else %}
+        {% with feedback=feed.feedback %}
+          {% include 'tutor/feedback.inc.html' %}
+        {% endwith %}
+      {% endif %}
+    {% endif %}
+    {% endwith %}
+  </div>
+</div>

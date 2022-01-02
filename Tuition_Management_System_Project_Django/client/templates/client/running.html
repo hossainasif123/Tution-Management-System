@@ -1,0 +1,14 @@
+{% extends 'client/base_client.html' %}
+
+{% block content %}
+    <div class="history">
+      <h3>Running Tuitions</h3>
+      {% if feed_list|length %}
+      {% for feed in feed_list %}
+        {% include 'client/single_ad.inc.html' %}
+      {% endfor %}
+      {% else %}
+        <p>No running tuitions.</p>
+      {% endif %}
+    </div>
+{% endblock %}

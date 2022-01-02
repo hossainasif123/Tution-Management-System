@@ -1,0 +1,117 @@
+    <style>
+    .user-profile {
+        margin: 10px 0;
+    }
+    .user-profile .user-image {
+        height: 8rem;
+        width: 8rem;
+        border-radius: 50%;
+    }
+
+    #about div.collapse {
+        display: block;
+        height: 45px;
+        overflow: hidden;
+    }
+
+    #about div.collapse.show {
+        display: block;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    #about div.collapsing[aria-expanded="false"] {
+        height: 45px;
+    }
+
+    #about a.collapsed  {
+        display: block;
+        margin-top: 10px;
+    }
+
+    #about a.collapsed:after  {
+        content: 'More';
+    }
+
+    #about a:not(.collapsed):after {
+        content: 'Less';
+    }
+    </style>
+    {% if editable %}
+        <a href="{% url 'tutor-edit-profile' profile.pk %}">Edit profile</a>
+    {% endif %}
+    <div class="user-profile card">
+      <div class="card-header">
+        <table>
+          <tr>
+            <td style="padding-right: 15px">
+              <img class="card-img user-image" src="/static/profile_imgs/{{ profile_img }}" alt="A portrait of {{ profile.name }}" />
+            </td>
+            <td>
+              <h1 class="card-title">
+                  {{ profile.name }}
+                  {% if profile.verification_set.first.verified %}
+                      <i class="text-info fas fa-check-circle" title="Verified tutor"></i>
+                  {% endif %}
+              </h1>
+              <h6 class="card-text"><i class="fa fa-graduation-cap"></i> {{ profile.bio }}</h6>
+              <h6 class="card-text"><i class="fa fa-map-marked"></i> {{ profile.location }}</h6>
+              <h6 class="card-text"><i class="fa fa-user"></i> {{ profile.gender }}</h6>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div id="about" class="card-body">
+        <h4 class="card-title">{{ profile.title }}</h4>
+        <div class="collapse" id="overview" aria-expanded="false">{{ profile.overview|linebreaks }}</div>
+        <a role="button" class="collapsed" data-toggle="collapse" href="#overview" aria-expanded="false"
+           aria-controls="overview"></a>
+      </div>
+      <div id="education" class="card-body">
+        <h4 class="card-title hr">Education</h4>
+        {% for edu in education %}
+        <div class="card-text" style="margin-bottom: 10px">
+          <h5 class="card-text">{{ edu.institute }}</h5>
+          <h6 class="card-text small text-muted">{{ edu.degree }}, {{ edu.department }}</h6>
+          <h6 class="card-text small text-muted">{{ edu.from_year|date:"Y" }} - {{ edu.to_year|date:"Y" }}, {{ edu.result }}</h6>
+        </div>
+        {% endfor %}
+      </div>
+      <div id="expertise" class="card-body">
+        <h4 class="card-title hr">Expertise</h4>
+        <p class="card-text">{{ profile.expertise}}</p>
+      </div>
+      <div id="work_history" class="card-body">
+        <h4 class="card-title hr">Tuition History</h4>
+      {% if work_history %}
+        {% for work in work_history %}
+        <div class="card">
+          <div class="card-body">
+            <table class="w-100">
+              <tr>
+                <td>
+                  <h6 class="card-title">{{ work.ad.title }}</h6>
+                  <p class="card-text small">{{ work.from_date|date:"M Y" }} - {{ work.to_date|date:"M Y" }},
+                    {{ work.ad.std_count }} student(s), {{ work.ad.days }} days a week<br>
+                    {{ work.ad.grade }} ({{ work.ad.type }}), {{ work.ad.subjects }}
+                  </p>
+                </td>
+                <td class="text-right">Salary<br><i class="fa">৳</i>{{ work.ad.salary }}</td>
+              </tr>
+            </table>
+            <div class="feedback">
+              {% with feedback=work.ad.clientfeedback_set.first %}
+                {% if feedback %}
+                    <hr>
+                    {% include 'tutor/feedback.inc.html' %}
+                {% endif %}
+              {% endwith %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p>No history found.</p>
+      {% endif %}
+      </div>
+    </div>

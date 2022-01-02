@@ -1,0 +1,14 @@
+{% extends 'client/base_client.html' %}
+
+{% block content %}
+    <div class="history">
+      <h3>History</h3>
+      {% if feed_archive|length %}
+      {% for feed in feed_archive %}
+        {% include 'client/single_ad.inc.html' %}
+      {% endfor %}
+      {% else %}
+        <p>No history found.</p>
+      {% endif %}
+    </div>
+{% endblock %}

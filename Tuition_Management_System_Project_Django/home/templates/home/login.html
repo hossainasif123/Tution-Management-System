@@ -1,0 +1,93 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block content %}
+  <style>
+  body{
+      background: -webkit-gradient(linear, left top, left bottom, from(rgba(22, 22, 22, 0.1)), color-stop(75%, rgba(22, 22, 22, 0.5)), to(#161616)), url("{% static 'img/bg.jpg' %}");
+      background: linear-gradient(to bottom, rgba(22, 22, 22, 0.1) 0%, rgba(22, 22, 22, 0.5) 75%, #161616 100%), url("{% static 'img/bg.jpg' %}");
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: scroll;
+      background-size: cover;
+  }
+  header .container {
+      padding-top: 8em;
+  }
+  .login-type {
+      margin-bottom: 10px;
+  }
+  .login-type a[aria-expanded="true"] {
+      color: black;
+  }
+  .login-type a[aria-expanded="false"] {
+      background-color: white;
+      color: black;
+  }
+  #forms .collapsing {
+    transition: none;
+  }
+  </style>
+  <h1 class="text-light text-uppercase text-center" style="color:gold">Login</h1>
+  {# Display message #}
+  {% if messages %}
+    {% for message in messages %}
+      {% if message.tags == 'error' %}
+        <div class="alert alert-danger">{{ message }}</div>
+      {% else %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  <div class="login-type row">
+    <div class="col-md-6">
+      <a data-toggle="collapse" href="#login_client" role="button" aria-controls="login_client"
+       {% if current_tab == 'client' %}
+         class="btn btn-success btn-block" aria-expanded="true"
+       {% else %}
+         class="btn btn-success btn-block collapsed" aria-expanded="false"
+       {% endif %}
+         >Guardian</a>
+    </div>
+    <div class="col-md-6">
+      <a data-toggle="collapse" href="#login_tutor" role="button" aria-controls="login_tutor"
+       {% if current_tab == 'tutor' %}
+         class="btn btn-success btn-block" aria-expanded="true"
+       {% else %}
+         class="btn btn-success btn-block collapsed" aria-expanded="false"
+       {% endif %}
+         >Tutor</a>
+    </div>
+  </div>
+  <div id="forms">
+  {% if not is_client %}
+    <form class="collapse {{ client_tab }}" id="login_client" method="post" action="{% url 'client-login' %}" data-parent="#forms">
+      {% csrf_token %}
+      <input class="form-control" type="email" name="email" placeholder="Enter your email address" required
+             value="{{ email }}">
+      <input class="form-control" type="password" name="password" placeholder="Enter password" required>
+      <button class="btn btn-success float-right" type="submit">Login as guardian</button>
+    </form>
+  {% else %}
+    <div class="collapse {{ client_tab }}" id="login_client" data-parent="#forms">
+      <p class="text-light">You're already logged in as a guardian.</p>
+      <a href="{% url 'client-logout' %}" class="btn btn-danger">Logout</a>
+      <a href="{% url 'client-home' %}" class="btn btn-dark float-right">Goto tution area</a>
+    </div>
+  {% endif %}
+  {% if not is_tutor %}
+    <form class="collapse {{ tutor_tab }}" id="login_tutor" method="post" action="{% url 'tutor-login' %}" data-parent="#forms">
+      {% csrf_token %}
+      <input class="form-control" type="email" name="email" placeholder="Enter your email address" required
+             value="{{ email }}">
+      <input class="form-control" type="password" name="password" placeholder="Enter password" required>
+      <button class="btn btn-success float-right" type="submit">Login as Tutor</button>
+    </form>
+  {% else %}
+    <div class="collapse {{ tutor_tab }}" id="login_tutor" data-parent="#forms">
+      <p class="text-light">You're already logged in as a tutor.</p>
+      <a href="{% url 'tutor-logout' %}" class="btn btn-danger">Logout</a>
+      <a href="{% url 'tutor-home' %}" class="btn btn-dark float-right">Goto Tutor area</a>
+    </div>
+  {% endif %}
+  </div>
+{% endblock content %}
